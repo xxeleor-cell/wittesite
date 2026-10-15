@@ -1,0 +1,6 @@
+# заявки с персональными данными — не публиковать
+data/requests/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/

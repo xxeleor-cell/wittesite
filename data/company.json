@@ -1,0 +1,16 @@
+{
+  "_comment": "Карточка предприятия. Пока официальная карточка не предоставлена, поля пустые — на сайте выводятся пометки «будет указано по карточке предприятия». Заполните значения без изменения ключей и пересоберите сайт: python3 tools/build.py",
+  "brand": "VITTE",
+  "name_short": "VITTE-Рус",
+  "legal_name": "",
+  "inn": "",
+  "kpp": "",
+  "ogrn": "",
+  "legal_address": "",
+  "office_address": "",
+  "phone": "",
+  "email": "",
+  "work_hours": "",
+  "bank_details": "",
+  "site_url": "https://example.ru"
+}
