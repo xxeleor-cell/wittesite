@@ -286,8 +286,12 @@ def main():
         dst = os.path.join(DOCS, f)
         if not os.path.exists(dst):
             src = docs[k]
-            # пересжатие изображений: файлы > 100 МБ не принимает GitHub, и их долго скачивать
-            src.rewrite_images(dpi_threshold=200, dpi_target=150, quality=75)
+            # пересжатие изображений: хостинг отклоняет тяжёлые файлы, их долго скачивать
+            # каталог климата — мелкие таблицы, нужно более высокое разрешение
+            if k == "hy":
+                src.rewrite_images(dpi_threshold=260, dpi_target=220, quality=70)
+            else:
+                src.rewrite_images(dpi_threshold=130, dpi_target=110, quality=60)
             src.save(dst, garbage=4, deflate=True)
     print("images:", len(os.listdir(OUT)))
 

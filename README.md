@@ -49,7 +49,7 @@ python3 tools/extract_images.py ~/Downloads/witte
 | `tools/server.py` | Локальный сервер + приём заявок |
 | `tools/extract_images.py` | Извлечение фото изделий из PDF/PPTX (координаты кадров) |
 | `tools/check_links.py` | Проверка битых ссылок и изображений |
-| `site/` | Готовый сайт: страницы, `assets/` (CSS, JS, фото), `docs/` (каталоги PDF/PPTX; изображения в PDF пересжаты до 150 dpi) |
+| `site/` | Готовый сайт: страницы, `assets/` (CSS, JS, фото), `docs/` (каталоги PDF/PPTX; изображения в PDF пересжаты до 110–220 dpi, каждый файл не более 12 МБ) |
 | `STRUCTURE.md` | Реализованные разделы и категории |
 | `MISSING_DATA.md` | Недостающие фото, характеристики и данные предприятия |
 
