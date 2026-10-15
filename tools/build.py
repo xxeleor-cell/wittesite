@@ -1,4 +1,4 @@
-"""Сборка статического сайта VITTE-Рус из структурированных данных.
+"""Сборка статического сайта Witte-rus из структурированных данных.
 
 Запуск:  python3 tools/build.py
 Исходные данные: data/catalog.json, data/products/*.json, data/company.json, data/documents.json
@@ -217,7 +217,7 @@ def mobile_nav():
             cats.append(f'<details><summary>{E(c["name"])}</summary><ul><li><a href="{url_of(d["slug"] + "/" + c["slug"])}">Все: {E(c["name"].lower())}</a></li>{subs}</ul></details>')
         dirs.append(f'<details class="mn-dir"><summary>{E(d["name"])}</summary><div><a class="mn-all" href="{url_of(d["slug"])}">Всё направление</a>{"".join(cats)}</div></details>')
     return f'''<div class="mnav" id="mnav" hidden>
-  <div class="mnav-head"><span class="logo-txt">VITTE<span>-Рус</span></span><button class="icon-btn" data-close-mnav aria-label="Закрыть меню">{ICONS["close"]}</button></div>
+  <div class="mnav-head"><span class="logo-txt">Witte<span>-rus</span></span><button class="icon-btn" data-close-mnav aria-label="Закрыть меню">{ICONS["close"]}</button></div>
   <form class="mnav-search" action="/search/" role="search"><input type="search" name="q" placeholder="Поиск по каталогу" aria-label="Поиск по каталогу"><button aria-label="Найти">{ICONS["search"]}</button></form>
   <nav aria-label="Мобильное меню">
     <a class="mn-link" href="/">Главная</a>
@@ -240,7 +240,7 @@ def footer():
     return f'''<footer class="footer">
   <div class="wrap footer-grid">
     <div>
-      <div class="logo-txt logo-light">VITTE<span>-Рус</span></div>
+      <div class="logo-txt logo-light">Witte<span>-rus</span></div>
       <p class="muted-light">Оборудование для свиноводства, птицеводства и КРС: кормление, поение, микроклимат, обогрев, полы и системы содержания.</p>
     </div>
     <div><h3>Каталог</h3><ul>{dirs}<li><a href="/search/">Поиск по каталогу</a></li></ul></div>
@@ -254,7 +254,7 @@ def footer():
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <span>© {datetime.date.today().year} {E(company.get("name_short", "VITTE-Рус"))}. Сведения о товарах приведены по каталогам изготовителей и не являются публичной офертой.</span>
+    <span>© {datetime.date.today().year} {E(company.get("name_short", "Witte-rus"))}. Сведения о товарах приведены по каталогам изготовителей и не являются публичной офертой.</span>
     <a href="/privacy/">Обработка персональных данных</a>
   </div>
 </footer>'''
@@ -287,7 +287,7 @@ def write_page(path, title, description, body, crumbs=None, active="", ld=None, 
     global MEGA, MNAV, FOOTER
     if MEGA is None:
         MEGA, MNAV, FOOTER = mega_menu(), mobile_nav(), footer()
-    full_title = title if "VITTE" in title else f"{title} — VITTE-Рус"
+    full_title = title if "Witte-rus" in title else f"{title} — Witte-rus"
     base = company.get("site_url", "").rstrip("/")
     lds = []
     if crumbs:
@@ -316,7 +316,7 @@ def write_page(path, title, description, body, crumbs=None, active="", ld=None, 
 <meta property="og:description" content="{E(description)}">
 <meta property="og:url" content="{base}{path}">
 {og_img}
-<meta name="theme-color" content="#14202b">
+<meta name="theme-color" content="#0b1a2e">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/css/site.css">
 {ld_html}
@@ -325,7 +325,7 @@ def write_page(path, title, description, body, crumbs=None, active="", ld=None, 
 <a class="skip" href="#main">Перейти к содержанию</a>
 <header class="header">
   <div class="wrap header-in">
-    <a class="logo" href="/" aria-label="VITTE-Рус — на главную"><span class="logo-txt">VITTE<span>-Рус</span></span><span class="logo-sub">оборудование для животноводства</span></a>
+    <a class="logo" href="/" aria-label="Witte-rus — на главную"><span class="logo-txt">Witte<span>-rus</span></span><span class="logo-sub">оборудование для животноводства</span></a>
     <nav class="nav" aria-label="Основное меню">
       {nav("/", "Главная", "home")}
       <div class="nav-cat">
@@ -431,6 +431,18 @@ def tile(href, title, text, image, count=None, cls="tile"):
     return f'<a class="{cls}" href="{href}"><div class="tile-img">{img}</div><div class="tile-body"><h3>{E(title)}</h3><p>{E(text)}</p>{cnt}</div></a>'
 
 
+def low(name):
+    """Строчные буквы для середины фразы, но аббревиатуры (КРС) не трогаем."""
+    return name if name.isupper() else name.lower()
+
+
+def count_label(path, cat=None):
+    if cat is not None and cat.get("on_request"):
+        return "подбор по запросу"
+    n = len(cat_products(path))
+    return f"{n} {plural(n, 'позиция', 'позиции', 'позиций')}"
+
+
 def plural(n, one, few, many):
     n = abs(n) % 100
     if 11 <= n <= 19:
@@ -472,7 +484,7 @@ def build_catalog():
     blocks = []
     for d in DIRS:
         cats = "".join(
-            f'<li><a href="{url_of(d["slug"] + "/" + c["slug"])}">{E(c["name"])}</a><span>{len(cat_products(d["slug"] + "/" + c["slug"]))}</span></li>'
+            f'<li><a href="{url_of(d["slug"] + "/" + c["slug"])}">{E(c["name"])}</a><span>{"по запросу" if c.get("on_request") else len(cat_products(d["slug"] + "/" + c["slug"]))}</span></li>'
             for c in d["categories"])
         blocks.append(f'''<section class="dir-block">
   <a class="dir-block-img" href="{url_of(d["slug"])}">{img_tag(d["image"], d["name"])}</a>
@@ -482,7 +494,7 @@ def build_catalog():
     body = f'''<section class="page-head wrap"><h1>Каталог оборудования</h1><p class="lead">Выберите направление животноводства, затем категорию оборудования и модель. Одна и та же позиция может применяться в нескольких направлениях — карточка изделия общая.</p></section>
 <div class="wrap dir-blocks">{"".join(blocks)}</div>'''
     write_page("/catalog/", "Каталог оборудования для животноводства",
-               "Каталог оборудования VITTE-Рус для свиноводства, птицеводства и КРС: кормление, поение, вентиляция, обогрев, полы и станки.",
+               "Каталог оборудования Witte-rus для свиноводства, птицеводства и КРС: кормление, поение, вентиляция, обогрев, полы и станки.",
                body, crumbs=[("Главная", "/"), ("Каталог оборудования", "/catalog/")], active="catalog")
 
     for d in DIRS:
@@ -494,12 +506,12 @@ def build_catalog():
             tiles.append(f'''<article class="cat-card">
   <a class="cat-card-img" href="{url_of(cp)}">{img_tag(c["image"], c["name"])}</a>
   <div class="cat-card-body"><h2><a href="{url_of(cp)}">{E(c["name"])}</a></h2><p>{E(c["description"])}</p><ul>{subs}</ul>
-  <span class="tile-count">{len(cat_products(cp))} {plural(len(cat_products(cp)), "позиция", "позиции", "позиций")}</span></div>
+  <span class="tile-count">{count_label(cp, c)}</span></div>
 </article>''')
         body = f'''<section class="dir-hero"><div class="dir-hero-img">{img_tag(d["image"], d["name"], lazy=False)}</div>
 <div class="wrap dir-hero-in"><h1>{E(d.get("full", d["name"]))}</h1><p class="lead">{E(d["description"])}</p></div></section>
 <div class="wrap section"><div class="cat-grid">{"".join(tiles)}</div>
-<p class="note">Категории формируются по фактически найденной продукции в исходных каталогах. Разделы, для которых материалы пока не предоставлены, будут добавлены после их получения.</p></div>'''
+<p class="note">Разделы с пометкой «подбор по запросу» комплектуются под проект: оставьте заявку, и мы подготовим предложение.</p></div>'''
         write_page(url_of(dpath), f"{d.get('full', d['name'])}: оборудование", d["description"], body,
                    crumbs=[("Главная", "/"), ("Каталог", "/catalog/"), (d["name"], url_of(dpath))], active="catalog",
                    og_image=d["image"])
@@ -508,6 +520,23 @@ def build_catalog():
             cp = f"{dpath}/{c['slug']}"
             subs = "".join(tile(url_of(cp + "/" + s["slug"]), s["name"], s["description"], s["image"],
                                 len(sub_products(cp + "/" + s["slug"])), "tile tile-sm") for s in c["subcategories"])
+            if c.get("on_request"):
+                points = "".join(f"<li>{E(x)}</li>" for x in c.get("request_points", []))
+                others = [x for x in DIRS if x is not d and any(cc["slug"] == c["slug"] for cc in x["categories"])]
+                body = f'''<section class="page-head wrap"><span class="eyebrow">{E(d["name"])}</span><h1>{E(c["name"])}</h1><p class="lead">{E(c["description"])}</p></section>
+<div class="wrap two-col two-col-form section-tight">
+  <div class="req-aside">
+    <div class="onreq-badge">Подбор по запросу</div>
+    <h2>Что указать в заявке</h2><ul class="ticks">{points}</ul>
+    <p class="note">Позиции этого раздела комплектуются под конкретный объект. Технические характеристики и стоимость — в коммерческом предложении.</p>
+    {img_tag(c["image"], c["name"], cls="onreq-img") if c.get("image") else ""}
+  </div>
+  <div><h2>Запрос подбора: {E(c["name"].lower())}</h2>{request_form(products_value=d["name"] + " — " + c["name"].lower(), direction=d.get("full", d["name"]))}</div>
+</div>'''
+                write_page(url_of(cp), f"{c['name']} — {low(d['name'])}", c["description"], body,
+                           crumbs=[("Главная", "/"), ("Каталог", "/catalog/"), (d["name"], url_of(dpath)), (c["name"], url_of(cp))],
+                           active="catalog", og_image=c.get("image"))
+                continue
             pids = cat_products(cp)
             sections = []
             for s in c["subcategories"]:
@@ -524,7 +553,7 @@ def build_catalog():
             body = f'''<section class="page-head wrap"><span class="eyebrow">{E(d["name"])}</span><h1>{E(c["name"])}</h1><p class="lead">{E(c["description"])}</p>{other_html}</section>
 <div class="wrap"><div class="tiles">{subs}</div></div>
 <div class="wrap section">{"".join(sections)}</div>'''
-            write_page(url_of(cp), f"{c['name']} — {d['name'].lower()}", c["description"], body,
+            write_page(url_of(cp), f"{c['name']} — {low(d['name'])}", c["description"], body,
                        crumbs=[("Главная", "/"), ("Каталог", "/catalog/"), (d["name"], url_of(dpath)), (c["name"], url_of(cp))],
                        active="catalog", og_image=c["image"])
 
@@ -539,7 +568,7 @@ def build_catalog():
                 body = f'''<section class="page-head wrap"><span class="eyebrow">{E(d["name"])} · {E(c["name"])}</span><h1>{E(s["name"])}</h1><p class="lead">{E(s["description"])}</p>
 <div class="chips">{siblings}</div></section>
 <div class="wrap section-tight">{grid(ids) if ids else '<p class="empty">Изделия будут добавлены.</p>'}</div>'''
-                write_page(url_of(sp), f"{s['name']} — {c['name'].lower()}, {d['name'].lower()}",
+                write_page(url_of(sp), f"{s['name']} — {c['name'].lower()}, {low(d['name'])}",
                            f"{s['name']}: {s['description']} Модели, характеристики и документация.", body,
                            crumbs=[("Главная", "/"), ("Каталог", "/catalog/"), (d["name"], url_of(dpath)), (c["name"], url_of(cp)), (s["name"], url_of(sp))],
                            active="catalog", ld=ld, og_image=s["image"])
@@ -642,8 +671,8 @@ def build_products():
 
 
 # ---------------------------------------------------------------- прочие страницы
-def request_form(prefill=True, compact=False):
-    dirs = "".join(f'<option>{E(d.get("full", d["name"]))}</option>' for d in DIRS)
+def request_form(prefill=True, compact=False, products_value="", direction=""):
+    dirs = "".join(f'<option{" selected" if d.get("full", d["name"]) == direction else ""}>{E(d.get("full", d["name"]))}</option>' for d in DIRS)
     return f'''<form class="rform{' rform-compact' if compact else ''}" data-request-form novalidate>
   <div class="rform-grid">
     <label><span>Имя и фамилия *</span><input name="name" required autocomplete="name"></label>
@@ -652,7 +681,7 @@ def request_form(prefill=True, compact=False):
     <label><span>E-mail</span><input name="email" type="email" autocomplete="email"></label>
     <label><span>Регион поставки</span><input name="region"></label>
     <label><span>Направление</span><select name="direction"><option value="">Не выбрано</option>{dirs}</select></label>
-    <label class="span2"><span>Оборудование</span><input name="products" data-products-field placeholder="Например: самокормушки YLC-100, 120 шт."></label>
+    <label class="span2"><span>Оборудование</span><input name="products" data-products-field placeholder="Например: самокормушки YLC-100, 120 шт." value="{E(products_value)}"></label>
     <label class="span2"><span>Комментарий: поголовье, размеры помещений, сроки</span><textarea name="comment" rows="4"></textarea></label>
   </div>
   <label class="check"><input type="checkbox" name="consent" required> <span>Согласен на обработку персональных данных для подготовки коммерческого предложения (<a href="/privacy/">подробнее</a>)</span></label>
@@ -691,7 +720,7 @@ def build_home():
     body = f'''<section class="hero">
   <div class="hero-img">{img_tag("case-4", "Свинокомплекс: станки с ПВХ-ограждениями и щелевыми полами", lazy=False)}</div>
   <div class="wrap hero-in">
-    <span class="eyebrow eyebrow-light">VITTE-Рус · оборудование для животноводства</span>
+    <span class="eyebrow eyebrow-light">Witte-rus · оборудование для животноводства</span>
     <h1>Оборудование для свиноводства, птицеводства и КРС</h1>
     <p class="lead">Кормление, поение, микроклимат, обогрев, щелевые полы и системы содержания животных. Каталог с техническими характеристиками и документацией по каждой модели.</p>
     <div class="hero-cta"><a class="btn btn-accent" href="/catalog/">Каталог оборудования</a><a class="btn btn-light" href="/request/">Запросить коммерческое предложение</a></div>
@@ -706,7 +735,7 @@ def build_home():
 <section class="section section-alt"><div class="wrap two-col"><div><h2>Документация</h2><p>Каталоги изготовителей с таблицами характеристик. Ссылки на нужные страницы есть в каждой карточке изделия.</p><a class="btn btn-primary" href="/documentation/">Все документы</a></div><ul class="doc-list">{docs}</ul></div></section>
 <section class="section wrap" id="request"><div class="two-col two-col-form"><div><h2>Запрос коммерческого предложения</h2><p>Опишите задачу: направление, поголовье, размеры помещений, перечень оборудования. Мы подготовим подбор и расчёт.</p>
 <ul class="contact-list"><li>Телефон: {company_field("phone")}</li><li>E-mail: {company_field("email")}</li><li>Адрес: {company_field("office_address")}</li></ul></div>{request_form()}</div></section>'''
-    write_page("/", "VITTE-Рус — оборудование для свиноводства, птицеводства и КРС",
+    write_page("/", "Witte-rus — оборудование для свиноводства, птицеводства и КРС",
                "Оборудование для животноводства: кормление, поение, вентиляция, обогрев, щелевые полы, станки и ограждения для свиноводства, птицеводства и КРС. Каталог с характеристиками и документацией.",
                body, active="home", og_image="case-4",
                ld={"@context": "https://schema.org", "@type": "Organization", "name": company.get("name_short"), "url": company.get("site_url")})
@@ -718,7 +747,7 @@ def build_static_pages():
             ("Юридический адрес", "legal_address"), ("Фактический адрес", "office_address"), ("Телефон", "phone"),
             ("E-mail", "email"), ("Режим работы", "work_hours"), ("Банковские реквизиты", "bank_details")]
     req = "".join(f'<tr><th scope="row">{k}</th><td>{company_field(v)}</td></tr>' for k, v in rows)
-    body = f'''<section class="page-head wrap"><h1>О компании</h1><p class="lead">VITTE-Рус — поставщик оборудования для животноводства. Каталог компании охватывает свиноводство, птицеводство и КРС.</p></section>
+    body = f'''<section class="page-head wrap"><h1>О компании</h1><p class="lead">Witte-rus — поставщик оборудования для животноводства. Каталог компании охватывает свиноводство, птицеводство и КРС.</p></section>
 <div class="wrap two-col section-tight">
   <div>
     <h2>Направления каталога</h2>
@@ -734,7 +763,7 @@ def build_static_pages():
   </div>
 </div>
 <section class="section section-alt"><div class="wrap"><div class="sec-head"><h2>Оборудование на объектах</h2><p>Фотографии из каталога изготовителя полимерных изделий.</p></div><div class="photos">{"".join(f'<button class="ph" data-lb-single="{img_url(n)}">{img_tag(n, "Объект с оборудованием")}</button>' for n in ["case-1", "case-3", "case-5", "case-6", "case-7", "case-8"])}</div></div></section>'''
-    write_page("/about/", "О компании VITTE-Рус", "VITTE-Рус — поставщик оборудования для свиноводства, птицеводства и КРС.", body,
+    write_page("/about/", "О компании Witte-rus", "Witte-rus — поставщик оборудования для свиноводства, птицеводства и КРС.", body,
                crumbs=[("Главная", "/"), ("О компании", "/about/")], active="about")
 
     # документация
@@ -768,7 +797,7 @@ def build_static_pages():
   </div>
   <div><h2>Написать нам</h2>{request_form()}</div>
 </div>'''
-    write_page("/contacts/", "Контакты", "Контакты VITTE-Рус: телефон, e-mail, адрес и форма обратной связи.", body,
+    write_page("/contacts/", "Контакты", "Контакты Witte-rus: телефон, e-mail, адрес и форма обратной связи.", body,
                crumbs=[("Главная", "/"), ("Контакты", "/contacts/")], active="contacts")
 
     body = f'''<section class="page-head wrap"><h1>Запрос коммерческого предложения</h1><p class="lead">Заполните форму — укажите оборудование, количество и параметры объекта. Поля со звёздочкой обязательны.</p></section>
@@ -779,7 +808,7 @@ def build_static_pages():
     body = '''<section class="page-head wrap"><h1>Обработка персональных данных</h1>
 <p class="lead">Политика обработки персональных данных будет опубликована после получения официальных реквизитов оператора.</p>
 <p>Данные из форм на сайте используются только для ответа на запрос и подготовки коммерческого предложения.</p></section>'''
-    write_page("/privacy/", "Обработка персональных данных", "Сведения об обработке персональных данных на сайте VITTE-Рус.", body,
+    write_page("/privacy/", "Обработка персональных данных", "Сведения об обработке персональных данных на сайте Witte-rus.", body,
                crumbs=[("Главная", "/"), ("Обработка персональных данных", "/privacy/")])
 
     body = '''<section class="page-head wrap"><h1>Поиск по каталогу</h1>

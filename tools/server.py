@@ -1,4 +1,4 @@
-"""Локальный сервер сайта VITTE-Рус.
+"""Локальный сервер сайта Witte-rus.
 
 Запуск:  python3 tools/server.py [порт]        (по умолчанию 8080)
 Открыть: http://localhost:8080/
@@ -82,7 +82,7 @@ class Server(socketserver.ThreadingMixIn, http.server.HTTPServer):
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
     with Server(("0.0.0.0", port), Handler) as httpd:
-        print(f"Сайт VITTE-Рус: http://localhost:{port}/  (Ctrl+C — остановить)")
+        print(f"Сайт Witte-rus: http://localhost:{port}/  (Ctrl+C — остановить)")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
