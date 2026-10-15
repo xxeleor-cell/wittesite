@@ -88,3 +88,12 @@ python3 tools/extract_images.py ~/Downloads/witte
 1. Заполнить `data/company.json` (включая `site_url`) и пересобрать сайт.
 2. Решить, куда отправлять заявки (почта/CRM) — сейчас они сохраняются в файл на сервере.
 3. Заменить фото и данные по списку из `MISSING_DATA.md`.
+
+## Фотографии из сторонних источников
+
+Все фото изделий взяты из каталогов изготовителей. Две фотографии направлений взяты с Unsplash (лицензия Unsplash: бесплатно, в том числе для коммерческого использования, указание автора не обязательно):
+
+| Файл | Где используется | Автор, источник |
+|---|---|---|
+| `site/assets/img/p/photo-chicks.jpg` | Направление «Птицеводство» | Michael Anfang — https://unsplash.com/photos/LAVcmB1Gli0 |
+| `site/assets/img/p/photo-cows.jpg` | Направление «КРС» | Portraits of Modern Dairy — https://unsplash.com/photos/NNIo1tcFJF0 |
