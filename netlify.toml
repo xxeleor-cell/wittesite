@@ -1,0 +1,4 @@
+# Netlify: сайт уже собран, публикуется папка site без команды сборки
+[build]
+  publish = "site"
+  command = ""
